@@ -11,7 +11,7 @@
     if (!dao) {
       return
     }
-    let res = await dao.submit_proposal(summarypayload)
+    let res = await dao.createProposal(summarypayload)
     if (res.Ok) {
       return res.Ok
     } else {

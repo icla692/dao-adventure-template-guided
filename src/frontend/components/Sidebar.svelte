@@ -19,6 +19,8 @@
     $view.current = $view.home;
   };
 
+  const canisterId = "axuxn-2qaaa-aaaap-aav6q-cai";
+
   const handleWebpage = () => {
     process.env.DFX_NETWORK === 'ic'
       ? window.open(`https://${canisterId}.raw.icp0.io`, '_blank')

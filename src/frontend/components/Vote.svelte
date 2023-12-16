@@ -27,7 +27,7 @@
     if (!dao) {
       return;
     }
-    let res = await dao.get_proposal(BigInt(thisid));
+    let res = await dao.getProposal(BigInt(thisid));
     if (res.length !== 0) {
       return res[0];
     } else {
