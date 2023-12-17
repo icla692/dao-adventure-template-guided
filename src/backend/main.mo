@@ -11,386 +11,409 @@ import Debug "mo:base/Debug";
 import Http "http";
 import Nat "mo:base/Nat";
 import Hash "mo:base/Hash";
-actor class DAO()  {
+actor class DAO() {
 
-    // For the logic of this level we need to bring back all the previous levels
+  let name : Text = "Motoko Development Kingdom";
+  let logo : Text = "<svg class='svg2' width='100%' height='100%' viewBox='0 0 238 60' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' style='fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;'><path d='M92.561,7.748L92.561,26.642L87.959,26.642L87.959,15.984L83.572,26.642L80.154,26.642L75.767,15.984L75.767,26.642L71.165,26.642L71.165,7.748L76.44,7.748L81.877,20.775L87.286,7.748L92.561,7.748ZM99.64,24.085C97.774,22.255 96.841,19.94 96.841,17.141C96.841,14.342 97.778,12.032 99.653,10.211C101.528,8.39 103.825,7.479 106.543,7.479C109.262,7.479 111.549,8.39 113.406,10.211C115.264,12.032 116.192,14.342 116.192,17.141C116.192,19.94 115.259,22.255 113.393,24.085C111.527,25.915 109.239,26.83 106.53,26.83C103.821,26.83 101.524,25.915 99.64,24.085ZM110.136,21.098C111.051,20.111 111.509,18.792 111.509,17.141C111.509,15.491 111.056,14.172 110.15,13.185C109.244,12.198 108.033,11.705 106.516,11.705C105,11.705 103.789,12.198 102.883,13.185C101.977,14.172 101.524,15.491 101.524,17.141C101.524,18.792 101.977,20.111 102.883,21.098C103.789,22.085 105,22.578 106.516,22.578C108.033,22.578 109.239,22.085 110.136,21.098ZM119.206,11.247L119.206,7.748L134.117,7.748L134.117,11.247L128.949,11.247L128.949,26.642L124.347,26.642L124.347,11.247L119.206,11.247ZM139.903,24.085C138.037,22.255 137.104,19.94 137.104,17.141C137.104,14.342 138.042,12.032 139.917,10.211C141.792,8.39 144.088,7.479 146.807,7.479C149.525,7.479 151.813,8.39 153.67,10.211C155.527,12.032 156.456,14.342 156.456,17.141C156.456,19.94 155.522,22.255 153.656,24.085C151.79,25.915 149.503,26.83 146.793,26.83C144.084,26.83 141.787,25.915 139.903,24.085ZM150.4,21.098C151.315,20.111 151.772,18.792 151.772,17.141C151.772,15.491 151.319,14.172 150.413,13.185C149.507,12.198 148.296,11.705 146.78,11.705C145.264,11.705 144.053,12.198 143.146,13.185C142.24,14.172 141.787,15.491 141.787,17.141C141.787,18.792 142.24,20.111 143.146,21.098C144.053,22.085 145.264,22.578 146.78,22.578C148.296,22.578 149.503,22.085 150.4,21.098ZM165.364,26.642L160.762,26.642L160.762,7.748L165.364,7.748L165.364,16.038L171.608,7.748L177.637,7.748L169.859,17.195L177.637,26.642L171.716,26.642L165.364,18.299L165.364,26.642ZM183.181,24.085C181.315,22.255 180.382,19.94 180.382,17.141C180.382,14.342 181.32,12.032 183.195,10.211C185.07,8.39 187.366,7.479 190.085,7.479C192.803,7.479 195.091,8.39 196.948,10.211C198.805,12.032 199.733,14.342 199.733,17.141C199.733,19.94 198.8,22.255 196.934,24.085C195.068,25.915 192.781,26.83 190.071,26.83C187.362,26.83 185.065,25.915 183.181,24.085ZM193.678,21.098C194.593,20.111 195.05,18.792 195.05,17.141C195.05,15.491 194.597,14.172 193.691,13.185C192.785,12.198 191.574,11.705 190.058,11.705C188.542,11.705 187.33,12.198 186.424,13.185C185.518,14.172 185.065,15.491 185.065,17.141C185.065,18.792 185.518,20.111 186.424,21.098C187.33,22.085 188.542,22.578 190.058,22.578C191.574,22.578 192.781,22.085 193.678,21.098Z' style='fill: rgb(10, 12, 24);'></path><path d='M71.165,32.834L79.374,32.834C81.293,32.834 82.823,33.301 83.962,34.234C85.102,35.167 85.671,36.351 85.671,37.787C85.671,39.922 84.424,41.366 81.93,42.12C83.204,42.299 84.218,42.829 84.972,43.708C85.725,44.587 86.102,45.619 86.102,46.803C86.102,48.31 85.55,49.508 84.447,50.396C83.343,51.284 81.805,51.728 79.831,51.728L71.165,51.728L71.165,32.834ZM75.767,36.333L75.767,40.424L78.781,40.424C79.445,40.424 79.979,40.254 80.383,39.913C80.787,39.572 80.988,39.065 80.988,38.392C80.988,37.719 80.787,37.208 80.383,36.858C79.979,36.508 79.445,36.333 78.781,36.333L75.767,36.333ZM75.767,48.229L79.239,48.229C79.867,48.229 80.387,48.041 80.8,47.664C81.213,47.287 81.419,46.767 81.419,46.103C81.419,45.439 81.222,44.91 80.827,44.515C80.432,44.12 79.921,43.923 79.293,43.923L75.767,43.923L75.767,48.229ZM92.346,49.171C90.48,47.341 89.547,45.027 89.547,42.227C89.547,39.428 90.485,37.118 92.36,35.297C94.235,33.476 96.531,32.565 99.25,32.565C101.968,32.565 104.256,33.476 106.113,35.297C107.97,37.118 108.898,39.428 108.898,42.227C108.898,45.027 107.965,47.341 106.099,49.171C104.233,51.001 101.946,51.917 99.236,51.917C96.527,51.917 94.23,51.001 92.346,49.171ZM102.843,46.184C103.758,45.197 104.215,43.878 104.215,42.227C104.215,40.577 103.762,39.258 102.856,38.271C101.95,37.284 100.739,36.791 99.223,36.791C97.707,36.791 96.495,37.284 95.589,38.271C94.683,39.258 94.23,40.577 94.23,42.227C94.23,43.878 94.683,45.197 95.589,46.184C96.495,47.171 97.707,47.664 99.223,47.664C100.739,47.664 101.946,47.171 102.843,46.184ZM114.9,49.171C113.034,47.341 112.101,45.027 112.101,42.227C112.101,39.428 113.039,37.118 114.914,35.297C116.789,33.476 119.085,32.565 121.804,32.565C124.522,32.565 126.81,33.476 128.667,35.297C130.524,37.118 131.452,39.428 131.452,42.227C131.452,45.027 130.519,47.341 128.653,49.171C126.787,51.001 124.5,51.917 121.79,51.917C119.081,51.917 116.784,51.001 114.9,49.171ZM125.397,46.184C126.312,45.197 126.769,43.878 126.769,42.227C126.769,40.577 126.316,39.258 125.41,38.271C124.504,37.284 123.293,36.791 121.777,36.791C120.261,36.791 119.049,37.284 118.143,38.271C117.237,39.258 116.784,40.577 116.784,42.227C116.784,43.878 117.237,45.197 118.143,46.184C119.049,47.171 120.261,47.664 121.777,47.664C123.293,47.664 124.5,47.171 125.397,46.184ZM134.467,36.333L134.467,32.834L149.377,32.834L149.377,36.333L144.21,36.333L144.21,51.728L139.607,51.728L139.607,36.333L134.467,36.333ZM155.164,49.171C153.298,47.341 152.365,45.027 152.365,42.227C152.365,39.428 153.302,37.118 155.177,35.297C157.052,33.476 159.344,32.565 162.054,32.565C164.153,32.565 166.019,33.122 167.652,34.234C169.285,35.346 170.424,36.89 171.07,38.863L165.579,38.863C164.862,37.482 163.713,36.791 162.134,36.791C160.555,36.791 159.313,37.284 158.407,38.271C157.501,39.258 157.048,40.577 157.048,42.227C157.048,43.878 157.501,45.197 158.407,46.184C159.313,47.171 160.555,47.664 162.134,47.664C163.713,47.664 164.862,46.973 165.579,45.592L171.07,45.592C170.424,47.565 169.285,49.109 167.652,50.221C166.019,51.333 164.153,51.89 162.054,51.89C159.344,51.89 157.048,50.984 155.164,49.171ZM187.38,51.728L186.33,48.552L179.548,48.552L178.498,51.728L173.6,51.728L180.167,32.781L185.765,32.781L192.305,51.728L187.38,51.728ZM180.705,45.053L185.173,45.053L182.939,38.325L180.705,45.053ZM217.308,32.834L217.308,51.728L212.706,51.728L212.706,41.07L208.319,51.728L204.901,51.728L200.514,41.07L200.514,51.728L195.912,51.728L195.912,32.834L201.187,32.834L206.623,45.861L212.033,32.834L217.308,32.834ZM237.09,38.621C237.09,39.895 236.633,41.124 235.717,42.308C235.233,42.918 234.511,43.416 233.551,43.802C232.591,44.188 231.456,44.381 230.146,44.381L227.293,44.381L227.293,51.728L222.691,51.728L222.691,32.834L230.146,32.834C232.335,32.834 234.04,33.4 235.26,34.53C236.48,35.66 237.09,37.024 237.09,38.621ZM227.293,40.882L230.146,40.882C230.846,40.882 231.398,40.675 231.801,40.263C232.205,39.85 232.407,39.307 232.407,38.634C232.407,37.962 232.201,37.41 231.788,36.979C231.375,36.549 230.828,36.333 230.146,36.333L227.293,36.333L227.293,40.882Z' style='fill: rgb(10, 12, 24);'></path><path d='M50.702,8.694C39.11,-2.898 20.287,-2.898 8.694,8.694C-2.898,20.287 -2.898,39.11 8.694,50.702C20.286,62.294 39.109,62.294 50.702,50.702C62.294,39.109 62.294,20.286 50.702,8.694Z' style='fill: rgb(10, 12, 24);'></path><path d='M47.507,11.889C37.678,2.06 21.718,2.06 11.889,11.889C2.06,21.718 2.06,37.678 11.889,47.507C21.718,57.336 37.678,57.336 47.507,47.507C57.336,37.678 57.336,21.718 47.507,11.889Z' style='fill: rgb(250, 232, 78);'></path><path d='M26.129,15.163C31.125,10.167 39.237,10.167 44.233,15.163C49.229,20.159 49.229,28.271 44.233,33.267L30.463,47.037C29.681,47.819 28.483,48.005 27.5,47.498C26.518,46.99 25.976,45.905 26.162,44.815L26.163,44.811C26.314,43.923 25.939,43.028 25.201,42.513C24.463,41.997 23.494,41.954 22.712,42.401L18.689,44.704C17.542,45.361 16.097,45.168 15.163,44.233C14.228,43.298 14.035,41.854 14.692,40.707L16.981,36.707C17.429,35.925 17.384,34.955 16.866,34.217C16.348,33.48 15.45,33.108 14.563,33.264L14.558,33.265C13.466,33.457 12.377,32.919 11.866,31.936C11.354,30.954 11.539,29.753 12.323,28.969L26.129,15.163Z' style='fill: rgb(10, 12, 24);'></path><path d='M28.538,18.472C24.617,22.393 24.209,28.352 27.627,31.77C31.045,35.188 37.004,34.78 40.925,30.859C44.846,26.937 45.255,20.979 41.836,17.56C38.418,14.142 32.459,14.55 28.538,18.472Z' style='fill: rgb(255, 255, 255);'></path><path d='M37.061,19.582C36.301,20.342 36.301,21.576 37.061,22.336C37.82,23.095 39.054,23.095 39.814,22.336C40.574,21.576 40.574,20.342 39.814,19.582C39.054,18.822 37.82,18.822 37.061,19.582Z' style='fill: rgb(10, 12, 24);'></path><path d='M31.217,25.425C30.457,26.185 30.457,27.419 31.217,28.179C31.977,28.939 33.21,28.939 33.971,28.18C34.731,27.42 34.731,26.186 33.971,25.426C33.211,24.666 31.977,24.666 31.217,25.425Z' style='fill: rgb(10, 12, 24);'></path></svg>";
+  let imageLogo : Text = "<svg class='svg1' width='400px' height='400px' xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' width='400' height='400'><path d='M 200.46875,0 C 157.88285,0 123.34375,34.539103 123.34375,77.125003 123.34375,91.284102 127.15107,104.5316 133.8125,115.9375 L 66.5,115.9375 0,400 400,400 336.28124,115.9375 267.09375,115.9375 C 273.75517,104.5316 277.59375,91.284102 277.59375,77.125003 277.59375,34.539103 243.05465,3.55e-6 200.46875,3.55e-6 z M 200.46875,34.187504 C 224.17945,34.187504 243.40624,53.414303 243.40624,77.125003 243.40624,100.8357 224.17945,120.0625 200.46875,120.0625 176.75805,120.0625 157.5,100.8357 157.5,77.125003 157.5,53.414303 176.75805,34.187504 200.46875,34.187504 z' fill='#1f1a17' /><path d='M 58.432998,302.7068 58,302.11389 58,299.23199 58.432998,298.63907 C 63.988919,298.09576 67.114119,297.66702 67.812149,297.33749 68.359,297.09064 68.759395,296.67962 68.981439,296.13631 69.36766,295.2304 69.619236,292.06859 69.766873,286.63314 69.590442,273.19976 70.991755,259.62076 69.855456,246.20394 69.737347,245.62756 69.470417,245.3311 69.026322,245.3311 68.774747,245.3311 68.358998,245.46339 67.812142,245.72677 L 55.884141,251.80355 55.307762,251.40788 C 55.085715,249.06929 54.773904,247.10984 54.403037,245.52952 L 54.744376,244.80433 C 65.632976,241.32952 74.655476,237.97046 81.841276,234.72593 L 82.966866,235.45112 C 81.86232,250.85645 81.867293,266.32108 81.841273,281.75871 81.841273,289.25165 82.019619,293.91232 82.403479,295.75722 82.567652,296.58045 82.90781,297.15683 83.396788,297.43675 84.123167,297.89738 87.057028,298.29306 92.212558,298.63911 L 92.731063,299.23203 92.731063,302.11393 92.212558,302.70684 86.818447,302.55803 C 81.381827,302.42692 77.707407,302.36077 75.796347,302.36077 70.477837,302.36077 64.685647,302.47652 58.432948,302.70685 L 58.432998,302.7068 z M 156.9241,302.7068 156.9241,298.63908 C 158.5682,298.63908 160.28789,298.49026 162.09499,298.16191 162.9253,297.99656 163.51703,297.73317 163.87254,297.37057 164.21388,296.99262 164.48081,296.31702 164.64262,295.3119 165.39568,277.38603 165.56663,259.38812 165.19065,241.4453 165.11624,241.21499 164.09458,241.08271 162.1245,241.08271 158.10874,241.08271 154.65638,241.21499 151.7544,241.47838 150.07959,241.62601 149.13117,241.79137 148.90912,241.95554 148.70125,242.1209 148.52408,242.40082 148.42015,242.79531 148.30204,243.20751 148.05046,246.02327 147.67959,251.26029 L 143.94612,251.26029 C 144.00518,245.11736 143.84219,239.83069 143.47132,235.40158 L 143.94612,235.00592 C 153.05834,235.45119 161.93082,235.68151 170.55403,235.68151 179.14657,235.68151 188.76192,235.45119 199.41432,235.00592 L 199.88795,235.77954 C 199.3411,240.19333 198.95487,245.34767 198.71866,251.26024 L 195.11865,251.26024 C 194.85172,245.89094 194.60014,242.99251 194.33321,242.53188 194.14069,242.18581 193.66589,241.93897 192.95486,241.80786 190.62926,241.39566 186.03595,241.18188 179.14657,241.18188 178.569,241.18188 178.21349,241.27991 178.10955,241.47834 177.91783,258.87817 177.08018,276.34926 177.8875,293.74811 178.03514,295.88826 178.37648,297.18985 178.92451,297.63394 179.31073,297.91386 181.57727,298.25992 185.73948,298.63906 L 185.73948,302.70678 C 176.14383,302.23358 166.51966,302.22679 156.92408,302.70678 L 156.9241,302.7068 z M 237.831,303.66112 C 227.1491,303.66112 218.9711,300.61506 213.3113,294.52174 207.63727,288.42842 204.79317,280.04614 204.79317,269.35834 204.79317,261.89848 206.17034,255.55834 208.92586,250.32134 211.6672,245.10086 215.48926,241.08274 220.36366,238.28353 225.23808,235.48314 231.50506,234.08353 239.17866,234.08353 246.55702,234.08353 252.58656,235.43471 257.26845,238.11818 261.96571,240.80283 265.56454,244.54103 268.09796,249.31737 270.63143,254.09259 271.90583,259.95558 271.90583,266.90518 271.90583,274.43117 270.51332,280.93548 267.72827,286.41938 264.9574,291.90325 261.04558,296.15168 255.99397,299.14927 250.94239,302.16346 244.88217,303.66109 237.83097,303.66109 L 237.831,303.66112 z M 239.4751,298.40876 C 245.29795,298.40876 249.935,296.02057 253.3873,291.24418 256.85266,286.46897 258.57235,279.20637 258.57235,269.45748 258.57235,259.23028 256.5869,251.37478 252.63138,245.90748 249.41642,241.51141 244.46759,239.30392 237.78609,239.30392 231.5345,239.30392 226.68959,241.60944 223.26799,246.20393 219.84515,250.79843 218.12546,257.88033 218.12546,267.43193 218.12546,274.3154 219.05971,280.14533 220.94121,284.92053 222.82271,289.69691 225.22271,293.13866 228.12705,295.24692 231.03021,297.35401 234.82273,298.40875 239.47515,298.40875 L 239.4751,298.40876 z M 278.3216,302.7068 278.3216,298.63908 C 281.86136,298.49026 283.92122,298.22687 284.52831,297.882 284.94288,297.61743 285.23934,297.2064 285.4472,296.61349 285.75784,295.83986 285.96571,293.12213 286.0543,288.46151 286.21729,280.73827 286.30587,274.92491 286.30587,271.006 L 286.21729,250.58471 C 286.21729,245.18351 286.06965,242.07131 285.74367,241.23154 285.56532,240.75319 285.29839,240.39058 284.9287,240.1768 284.33579,239.78232 282.14366,239.41972 278.3216,239.05712 L 278.3216,235.00593 C 282.89838,235.17128 286.27634,235.25278 288.48499,235.25278 290.91335,235.25278 293.67004,235.17128 296.76571,235.00593 303.43306,244.45831 310.94372,254.71853 319.34492,265.78553 324.92918,273.19578 329.74452,279.30563 333.78862,284.13043 L 333.78862,265.01073 C 333.78862,257.78119 333.71539,251.54023 333.53704,246.30323 333.41894,243.17447 333.18272,241.26346 332.84138,240.55597 332.6642,240.17682 332.35239,239.89691 331.87878,239.73274 331.41815,239.56738 329.38901,239.3536 325.80435,239.05714 L 325.80435,235.00595 C 328.95909,235.17131 332.10083,235.2528 335.22721,235.2528 339.50753,235.2528 343.38864,235.17131 346.85641,235.00595 L 346.85641,239.05714 C 343.61192,239.28746 341.67135,239.55085 341.00404,239.83077 340.619,239.99612 340.32254,240.22644 340.08632,240.50635 339.86427,240.80282 339.68593,241.16542 339.56782,241.62605 339.35994,242.38432 339.256,244.87054 339.22648,249.05402 L 339.09301,268.35442 339.00443,287.78591 C 339.00443,293.00639 339.10837,298.21032 339.30088,303.41432 L 338.7375,304.08991 C 335.24143,303.38125 332.76702,302.92062 331.31544,302.70684 323.87802,293.53438 314.89924,282.02214 304.36614,268.15594 299.04763,261.14136 294.75077,255.24524 291.47674,250.45354 L 291.47674,269.21063 C 291.47674,274.33191 291.55115,280.49134 291.69879,287.68783 291.7732,293.00634 291.97989,296.0536 292.30705,296.8603 292.40981,297.20637 292.63304,297.48629 292.95784,297.68352 293.50588,298.0296 295.57989,298.35912 299.19525,298.63905 L 299.19525,302.70677 C 294.51335,302.47644 291.15075,302.36069 289.13575,302.36069 287.44795,302.36069 283.84676,302.47644 278.32155,302.70677 L 278.3216,302.7068 z' fill='#ffffff'/></svg>";
+  let banner : Text = "<?xml version='1.0' encoding='iso-8859-1'?><!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg fill='#000000' height='800px' width='800px' version='1.1' id='Capa_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 290.262 290.262' xml:space='preserve'><g id='_x34_2-_1080_Full_HD'><path d='M278.743,29.29H11.519C5.157,29.29,0,34.447,0,40.809v128.645v11.355v68.645c0,6.361,5.157,11.519,11.519,11.519h267.225 c6.361,0,11.519-5.157,11.519-11.519v-68.645v-11.355V40.809C290.262,34.447,285.104,29.29,278.743,29.29z M56.563,185.959H33.751 v15.375H54.19v4.813H33.751v18.748h-4.996v-43.748h27.809V185.959z M99.69,206.895c0,11.375-6.875,18.252-18.313,18.252 c-11.5,0-18.436-6.877-18.436-18.252v-25.748h5v25.748c0,8.5,5.122,13.439,13.436,13.439c8.313,0,13.313-4.939,13.313-13.439 v-25.748h5V206.895z M136.13,224.895h-24.188v-43.748h5v39.002h19.188V224.895z M168.444,224.895h-24.187v-43.748h4.998v39.002 h19.189V224.895z M214.693,224.895h-11.126v-16.998h-18.121v16.998h-11.127v-43.748h11.127v18h18.121v-18h11.126V224.895z M241.822,224.895h-18.376v-25.201h11.125v16.33h7.939c6.811,0,11.688-5.254,11.688-12.939c0-7.754-5.126-13.063-12.189-13.063 h-18.563v-8.875h18.813c13.75,0,23.248,8.875,23.248,21.873C265.507,215.957,255.882,224.895,241.822,224.895z M267.225,157.935 H23.037V52.327h244.188V157.935z'/> <polygon points='53.415,128.666 66.592,128.666 66.592,76.775 43.866,76.775 43.866,87.363 53.415,87.363 '/><path d='M99.901,129.037c14.656,0,22.873-9.404,22.873-26.354c0-16.877-8.217-26.279-22.873-26.279 c-14.805,0-23.021,9.402-23.021,26.279C76.88,119.633,85.097,129.037,99.901,129.037z M99.901,86.029c6.514,0,9.4,4.813,9.4,16.654 s-2.887,16.729-9.4,16.729c-6.664,0-9.475-4.887-9.475-16.729S93.237,86.029,99.901,86.029z'/><path d='M128.401,114.232c0,9.178,8.29,15.025,21.246,15.025c12.951,0,21.243-5.922,21.243-15.25 c0-5.771-3.552-10.732-9.253-13.102c4.072-2.221,6.514-6.217,6.514-10.734c0-8.512-7.18-13.914-18.58-13.914 c-11.25,0-18.505,5.258-18.505,13.549c0,4.512,2.814,8.656,7.18,11.1C132.251,103.275,128.401,108.307,128.401,114.232z M149.647,84.918c4.811,0,7.475,2.148,7.475,5.994c0,3.703-2.664,5.777-7.475,5.777c-4.813,0-7.477-2.074-7.477-5.777 C142.17,87.066,144.835,84.918,149.647,84.918z M149.647,106.164c5.697,0,8.881,2.441,8.881,6.736c0,4.441-3.184,6.811-8.881,6.811 c-5.701,0-8.809-2.445-8.809-6.811C140.839,108.605,143.946,106.164,149.647,106.164z'/><path d='M199.466,129.037c14.655,0,22.872-9.404,22.872-26.354c0-16.877-8.217-26.279-22.872-26.279 c-14.805,0-23.023,9.402-23.023,26.279C176.443,119.633,184.661,129.037,199.466,129.037z M199.466,86.029 c6.514,0,9.398,4.813,9.398,16.654s-2.885,16.729-9.398,16.729c-6.662,0-9.475-4.887-9.475-16.729S192.804,86.029,199.466,86.029z'/><path d='M234.948,121.119h4.865c6.857,0,10.803-3.641,10.803-9.924c0-5.973-3.945-9.346-10.803-9.346h-11.682v26.816h6.816V121.119 z M234.948,107.213h4.521c2.987,0,4.712,1.414,4.712,4.217c0,2.832-1.725,4.326-4.712,4.326h-4.521V107.213z'/></g></svg>";
+  var manifesto : Text = "Empower the next wave of motoko builders to make the Web3 revolution a reality";
 
-    ///////////////
-    // LEVEL #1 //
-    /////////////
+  let goals : Buffer.Buffer<Text> = Buffer.Buffer<Text>(0);
 
-    let name : Text = "Motoko Development Kingdom";
-    var manifesto : Text = "Empower the next wave of builders to make the Web3 revolution a reality";
+  public type Socials = {
+    Twitter : ?Text;
+    GitHub : ?Text;
+    Linkedin : ?Text;
+    Instagram : ?Text;
+    TikTok : ?Text;
+    OpenChat : ?Text;
+  };
 
-    let goals : Buffer.Buffer<Text> = Buffer.Buffer<Text>(0);
+  public shared query func getNameMBC() : async Text {
+    return name;
+  };
 
-    public shared query func getName() : async Text {
-        return name;
+  public shared query func getAuthorMBC() : async Text {
+    "icla692"
+  };
+
+  public shared query func getSocialsAuthorMBC () : async Socials {
+    let motokoBootcampSocials : Socials = {
+      Twitter = ?"https://twitter.com/icla692";
+      GitHub = ?"https://github.com/icla692";
+      Instagram = ?"https://www.instagram.com/ionita.claudiu/";
+      TikTok = ?"";
+      OpenChat = ?"";
+      Linkedin = ?"";
     };
+    return motokoBootcampSocials;
 
-    public shared query func getManifesto() : async Text {
-        return manifesto;
+  } ;
+
+  public type Images = {
+    urlLogo : ?Text;
+    urlBanner : ?Text;
+  };
+
+  public shared query func getImagesMBC  () : async Images {
+    let images : Images = {
+    urlLogo = ?logo;
+    urlBanner = ?banner;
     };
+    return images;
+  };
 
-    public func setManifesto(newManifesto : Text) : async () {
-        manifesto := newManifesto;
-        return;
+  public shared query func getManifesto() : async Text {
+    return manifesto;
+  };
+
+  public func setManifesto(newManifesto : Text) : async () {
+    manifesto := newManifesto;
+    return;
+  };
+
+  public func addGoal(newGoal : Text) : async () {
+    goals.add(newGoal);
+    return;
+  };
+
+  public shared query func getGoals() : async [Text] {
+    return Buffer.toArray(goals);
+  };
+
+  public type Member = {
+    name : Text;
+    age : Nat;
+  };
+  public type Result<A, B> = Result.Result<A, B>;
+  public type HashMap<A, B> = HashMap.HashMap<A, B>;
+
+  let dao : HashMap<Principal, Member> = HashMap.HashMap<Principal, Member>(0, Principal.equal, Principal.hash);
+
+  public shared ({ caller }) func addMember(member : Member) : async Result<(), Text> {
+    switch (dao.get(caller)) {
+      case (?member) {
+        return #err("Already a member");
+      };
+      case (null) {
+        dao.put(caller, member);
+        return #ok(());
+      };
     };
+  };
 
-    public func addGoal(newGoal : Text) : async () {
-        goals.add(newGoal);
-        return;
+  public shared ({ caller }) func updateMember(member : Member) : async Result<(), Text> {
+    switch (dao.get(caller)) {
+      case (?member) {
+        dao.put(caller, member);
+        return #ok(());
+      };
+      case (null) {
+        return #err("Not a member");
+      };
     };
+  };
 
-    public shared query func getGoals() : async [Text] {
-        return Buffer.toArray(goals);
+  public shared ({ caller }) func removeMember() : async Result<(), Text> {
+    switch (dao.get(caller)) {
+      case (?member) {
+        dao.delete(caller);
+        return #ok(());
+      };
+      case (null) {
+        return #err("Not a member");
+      };
     };
+  };
 
-    ///////////////
-    // LEVEL #2 //
-    /////////////
-
-    public type Member = {
-        name : Text;
-        age : Nat;
+  public query func getMember(p : Principal) : async Result<Member, Text> {
+    switch (dao.get(p)) {
+      case (?member) {
+        return #ok(member);
+      };
+      case (null) {
+        return #err("Not a member");
+      };
     };
-    public type Result<A, B> = Result.Result<A, B>;
-    public type HashMap<A, B> = HashMap.HashMap<A, B>;
+  };
 
-    let dao : HashMap<Principal, Member> = HashMap.HashMap<Principal, Member>(0, Principal.equal, Principal.hash);
+  public query func getAllMembers() : async [Member] {
+    Iter.toArray(dao.vals());
+  };
 
-    public shared ({ caller }) func addMember(member : Member) : async Result<(), Text> {
-        switch (dao.get(caller)) {
-            case (?member) {
-                return #err("Already a member");
-            };
-            case (null) {
-                dao.put(caller, member);
-                return #ok(());
-            };
-        };
+  public query func numberOfMembers() : async Nat {
+    return dao.size();
+  };
+
+  public type Subaccount = Blob;
+  public type Account = {
+    owner : Principal;
+    subaccount : ?Subaccount;
+  };
+
+  let nameToken = "Kitty Play Toy";
+  let symbolToken = "KPT";
+
+  let ledger : TrieMap.TrieMap<Account, Nat> = TrieMap.TrieMap(Account.accountsEqual, Account.accountsHash);
+
+  public query func tokenName() : async Text {
+    return nameToken;
+  };
+
+  public query func tokenSymbol() : async Text {
+    return symbolToken;
+  };
+
+  public func mint(owner : Principal, amount : Nat) : async () {
+    let defaultAccount = { owner = owner; subaccount = null };
+    switch (ledger.get(defaultAccount)) {
+      case (null) {
+        ledger.put(defaultAccount, amount);
+      };
+      case (?some) {
+        ledger.put(defaultAccount, some + amount);
+      };
     };
+    return;
+  };
 
-    public shared ({ caller }) func updateMember(member : Member) : async Result<(), Text> {
-        switch (dao.get(caller)) {
-            case (?member) {
-                dao.put(caller, member);
-                return #ok(());
-            };
-            case (null) {
-                return #err("Not a member");
-            };
-        };
+  public shared ({ caller }) func transfer(from : Account, to : Account, amount : Nat) : async Result<(), Text> {
+    let fromBalance = switch (ledger.get(from)) {
+      case (null) { 0 };
+      case (?some) { some };
     };
-
-    public shared ({ caller }) func removeMember() : async Result<(), Text> {
-        switch (dao.get(caller)) {
-            case (?member) {
-                dao.delete(caller);
-                return #ok(());
-            };
-            case (null) {
-                return #err("Not a member");
-            };
-        };
+    if (fromBalance < amount) {
+      return #err("Not enough balance");
     };
-
-    public query func getMember(p : Principal) : async Result<Member, Text> {
-        switch (dao.get(p)) {
-            case (?member) {
-                return #ok(member);
-            };
-            case (null) {
-                return #err("Not a member");
-            };
-        };
+    let toBalance = switch (ledger.get(to)) {
+      case (null) { 0 };
+      case (?some) { some };
     };
+    ledger.put(from, fromBalance - amount);
+    ledger.put(to, toBalance + amount);
+    return #ok();
+  };
 
-    public query func getAllMembers() : async [Member] {
-        Iter.toArray(dao.vals());
+  public query func balanceOf(account : Account) : async Nat {
+    return switch (ledger.get(account)) {
+      case (null) { 0 };
+      case (?some) { some };
     };
+  };
 
-    public query func numberOfMembers() : async Nat {
-        return dao.size();
+  public query func totalSupply() : async Nat {
+    var total = 0;
+    for (balance in ledger.vals()) {
+      total += balance;
     };
+    return total;
+  };
 
-    ///////////////
-    // LEVEL #3 //
-    /////////////
+  public type Status = {
+    #Open;
+    #Accepted;
+    #Rejected;
+  };
 
-    public type Subaccount = Blob;
-    public type Account = {
-        owner : Principal;
-        subaccount : ?Subaccount;
+  public type Proposal = {
+    id : Nat;
+    status : Status;
+    manifest : Text;
+    votes : Int;
+    voters : [Principal];
+  };
+
+  public type CreateProposalOk = Nat;
+
+  public type CreateProposalErr = {
+    #NotDAOMember;
+    #NotEnoughTokens;
+  };
+
+  public type createProposalResult = Result<CreateProposalOk, CreateProposalErr>;
+
+  public type VoteOk = {
+    #ProposalAccepted;
+    #ProposalRefused;
+    #ProposalOpen;
+  };
+
+  public type VoteErr = {
+    #ProposalNotFound;
+    #AlreadyVoted;
+    #ProposalEnded;
+    #NotDAOMember;
+    #NotEnoughTokens;
+  };
+
+  public type voteResult = Result<VoteOk, VoteErr>;
+  var proposalId : Nat = 0;
+  let proposals : TrieMap.TrieMap<Nat, Proposal> = TrieMap.TrieMap(Nat.equal, Hash.hash);
+
+  func _isMember(caller : Principal) : Bool {
+    switch (dao.get(caller)) {
+      case (null) { return false };
+      case (?some) { return true };
     };
+  };
 
-    let nameToken = "Kitty Play Toy";
-    let symbolToken = "KPT";
-
-    let ledger : TrieMap.TrieMap<Account, Nat> = TrieMap.TrieMap(Account.accountsEqual, Account.accountsHash);
-
-    public query func tokenName() : async Text {
-        return nameToken;
+  func _hasEnoughTokens(caller : Principal, necesaryAmount : Nat) : Bool {
+    let defaultAccount = { owner = caller; subaccount = null };
+    switch (ledger.get(defaultAccount)) {
+      case (null) { return false };
+      case (?some) { return some > necesaryAmount };
     };
+  };
 
-    public query func tokenSymbol() : async Text {
-        return symbolToken;
+  func _burnTokens(caller : Principal, burnAmount : Nat) {
+    let defaultAccount = { owner = caller; subaccount = null };
+    switch (ledger.get(defaultAccount)) {
+      case (null) { return };
+      case (?some) { ledger.put(defaultAccount, some - burnAmount) };
     };
+  };
 
-    public func mint(owner : Principal, amount : Nat) : async () {
-        let defaultAccount = { owner = owner; subaccount = null };
-        switch (ledger.get(defaultAccount)) {
-            case (null) {
-                ledger.put(defaultAccount, amount);
-            };
-            case (?some) {
-                ledger.put(defaultAccount, some + amount);
-            };
-        };
-        return;
+  public shared ({ caller }) func createProposal(manifest : Text) : async createProposalResult {
+    if (not _isMember(caller)) {
+      return #err(#NotDAOMember);
     };
-
-    public shared ({ caller }) func transfer(from : Account, to : Account, amount : Nat) : async Result<(), Text> {
-        let fromBalance = switch (ledger.get(from)) {
-            case (null) { 0 };
-            case (?some) { some };
-        };
-        if (fromBalance < amount) {
-            return #err("Not enough balance");
-        };
-        let toBalance = switch (ledger.get(to)) {
-            case (null) { 0 };
-            case (?some) { some };
-        };
-        ledger.put(from, fromBalance - amount);
-        ledger.put(to, toBalance + amount);
-        return #ok();
+    if (not _hasEnoughTokens(caller, 1)) {
+      return #err(#NotEnoughTokens);
     };
-
-    public query func balanceOf(account : Account) : async Nat {
-        return switch (ledger.get(account)) {
-            case (null) { 0 };
-            case (?some) { some };
-        };
+    let proposal = {
+      id = proposalId;
+      status = #Open;
+      manifest = manifest;
+      votes = 0;
+      voters = [];
     };
+    proposals.put(proposalId, proposal);
+    proposalId += 1;
+    _burnTokens(caller, 1);
+    return #ok(proposal.id);
+  };
 
-    public query func totalSupply() : async Nat {
-        var total = 0;
-        for (balance in ledger.vals()) {
-            total += balance;
-        };
-        return total;
+  public query func getProposal(id : Nat) : async ?Proposal {
+    proposals.get(id);
+  };
+
+  public query func getProposals() : async [Proposal] {
+    return Iter.toArray(proposals.vals());
+  };
+
+  public shared ({ caller }) func vote(id : Nat, vote : Bool) : async voteResult {
+    if (not _isMember(caller)) {
+      return #err(#NotDAOMember);
     };
-
-    ///////////////
-    // LEVEL #4 //
-    /////////////
-
-    public type Status = {
-        #Open;
-        #Accepted;
-        #Rejected;
+    if (not _hasEnoughTokens(caller, 1)) {
+      return #err(#NotEnoughTokens);
     };
-
-    public type Proposal = {
-        id : Nat;
-        status : Status;
-        manifest : Text;
-        votes : Int;
-        voters : [Principal];
+    let proposal = switch (proposals.get(id)) {
+      case (null) { return #err(#ProposalNotFound) };
+      case (?some) { some };
     };
-
-    public type CreateProposalOk = Nat;
-
-    public type CreateProposalErr = {
-        #NotDAOMember;
-        #NotEnoughTokens;
+    if (proposal.status != #Open) {
+      return #err(#ProposalEnded);
     };
-
-    public type createProposalResult = Result<CreateProposalOk, CreateProposalErr>;
-
-    public type VoteOk = {
-        #ProposalAccepted;
-        #ProposalRefused;
-        #ProposalOpen;
+    for (voter in proposal.voters.vals()) {
+      if (voter == caller) {
+        return #err(#AlreadyVoted);
+      };
     };
+    let newVoters = Buffer.fromArray<Principal>(proposal.voters);
+    newVoters.add(caller);
+    let voteChange = if (vote == true) { 1 } else { -1 };
+    let newVote = proposal.votes + voteChange;
+    let newStatus = if (newVote >= 2) { #Accepted } else if (newVote <= -2) {
+      #Rejected;
+    } else { #Open };
 
-    public type VoteErr = {
-        #ProposalNotFound;
-        #AlreadyVoted;
-        #ProposalEnded;
-        #NotDAOMember;
-        #NotEnoughTokens;
+    let newProposal : Proposal = {
+      id = proposal.id;
+      status = newStatus;
+      manifest = proposal.manifest;
+      votes = newVote;
+      voters = Buffer.toArray(newVoters);
     };
-
-    public type voteResult = Result<VoteOk, VoteErr>;
-    var proposalId : Nat = 0;
-    let proposals : TrieMap.TrieMap<Nat, Proposal> = TrieMap.TrieMap(Nat.equal, Hash.hash);
-
-    func _isMember(caller : Principal) : Bool {
-        switch (dao.get(caller)) {
-            case (null) { return false };
-            case (?some) { return true };
-        };
+    proposals.put(id, newProposal);
+    _burnTokens(caller, 1);
+    if (newStatus == #Accepted) {
+      return #ok(#ProposalAccepted);
     };
-
-    func _hasEnoughTokens(caller : Principal, necesaryAmount : Nat) : Bool {
-        let defaultAccount = { owner = caller; subaccount = null };
-        switch (ledger.get(defaultAccount)) {
-            case (null) { return false };
-            case (?some) { return some > necesaryAmount };
-        };
+    if (newStatus == #Rejected) {
+      return #ok(#ProposalRefused);
     };
-    
-    func _burnTokens(caller : Principal, burnAmount : Nat) {
-        let defaultAccount = { owner = caller; subaccount = null };
-        switch (ledger.get(defaultAccount)) {
-            case (null) { return };
-            case (?some) { ledger.put(defaultAccount, some - burnAmount) };
-        };
+    return #ok(#ProposalOpen);
+  };
+
+  /// DO NOT REMOVE - Used for testing
+  public shared query ({ caller }) func whoami() : async Principal {
+    return caller;
+  };
+
+  func _getWebpage() : Text {
+    var webpage = "<style>" #
+    "body { text-align: center; font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; }" #
+    "h1 { font-size: 3em; margin-bottom: 10px; }" #
+    "hr { margin-top: 20px; margin-bottom: 20px; }" #
+    "em { font-style: italic; display: block; margin-bottom: 20px; }" #
+    "ul { list-style-type: none; padding: 0; }" #
+    "li { margin: 10px 0; }" #
+    "li:before { content: '?? '; }" #
+    ".svg1 { max-width: 400px; height: auto; display: block; margin: 20px auto; }" #
+    ".svg2 { max-width: 150px; height: auto; display: block; margin: 20px auto; }" #
+    "h2 { text-decoration: underline; }" #
+    "</style>";
+
+    webpage := webpage # "<div><h1>" # name # "</h1></div>";
+    webpage := webpage # "<em>" # manifesto # "</em>";
+    webpage := webpage # "<div>" # imageLogo # "</div>";
+    webpage := webpage # "<hr>";
+    webpage := webpage # "<h2>Our goals:</h2>";
+    webpage := webpage # "<ul>";
+    for (goal in goals.vals()) {
+      webpage := webpage # "<li>" # goal # "</li>";
     };
+    webpage := webpage # "</ul>";
+    webpage := webpage # "<div>" # banner # "</div>";
+    webpage := webpage # "<div>" # logo # "</div>";
+    return webpage;
+  };
 
-    public shared ({ caller }) func createProposal(manifest : Text) : async createProposalResult {
-        if (not _isMember(caller)) {
-            return #err(#NotDAOMember);
-        };
-        if (not _hasEnoughTokens(caller, 1)) {
-            return #err(#NotEnoughTokens);
-        };
-        let proposal = {
-            id = proposalId;
-            status = #Open;
-            manifest = manifest;
-            votes = 0;
-            voters = [];
-        };
-        proposals.put(proposalId, proposal);
-        proposalId += 1;
-        _burnTokens(caller, 1);
-        return #ok(proposal.id);
-    };
+  public type DAOStats = {
+    name : Text;
+    manifesto : Text;
+    goals : [Text];
+    member : [Text];
+    logo : Text;
+    numberOfMembers : Nat;
+  };
+  public type HttpRequest = Http.Request;
+  public type HttpResponse = Http.Response;
 
-    public query func getProposal(id : Nat) : async ?Proposal {
-        proposals.get(id);
-    };
+  public query func http_request(request : HttpRequest) : async HttpResponse {
+    return ({
+      status_code = 200;
+      headers = [("Content-Type", "text/html;charset=UTF-8")];
+      body = Text.encodeUtf8(_getWebpage());
+      streaming_strategy = null;
+    });
+  };
 
-    public query func getProposals() : async [Proposal] { 
-        return Iter.toArray(proposals.vals());
-    };
+  func _getNameFromMember(member : Member) : Text {
+    return member.name;
+  };
 
-    public shared ({ caller }) func vote(id : Nat, vote : Bool) : async voteResult {
-        if (not _isMember(caller)) {
-            return #err(#NotDAOMember);
-        };
-        if (not _hasEnoughTokens(caller, 1)) {
-            return #err(#NotEnoughTokens);
-        };
-        let proposal = switch (proposals.get(id)) {
-            case (null) { return #err(#ProposalNotFound) };
-            case (?some) { some };
-        };
-        if (proposal.status != #Open) {
-            return #err(#ProposalEnded);
-        };
-        for (voter in proposal.voters.vals()) {
-            if (voter == caller) {
-                return #err(#AlreadyVoted);
-            };
-        };
-        let newVoters = Buffer.fromArray<Principal>(proposal.voters);
-        newVoters.add(caller);
-        let voteChange = if (vote == true) { 1 } else { -1 };
-        let newVote = proposal.votes + voteChange;
-        let newStatus = if (newVote >= 10) { #Accepted } else if (newVote <= -10) {
-            #Rejected;
-        } else { #Open };
-
-        let newProposal : Proposal = {
-            id = proposal.id;
-            status = newStatus;
-            manifest = proposal.manifest;
-            votes = newVote;
-            voters = Buffer.toArray(newVoters);
-        };
-        proposals.put(id, newProposal);
-        _burnTokens(caller, 1);
-        if (newStatus == #Accepted) {
-            return #ok(#ProposalAccepted);
-        };
-        if (newStatus == #Rejected) {
-            return #ok(#ProposalRefused);
-        };
-        return #ok(#ProposalOpen);
-    };
-
-    /// DO NOT REMOVE - Used for testing
-    public shared query ({ caller }) func whoami() : async Principal {
-        return caller;
-    };
-
-    ///////////////
-    // LEVEL #5 //
-    /////////////
-    let logo : Text ="<svg width='100%' height='100%' viewBox='0 0 238 60' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' style='fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;'><path d='M92.561,7.748L92.561,26.642L87.959,26.642L87.959,15.984L83.572,26.642L80.154,26.642L75.767,15.984L75.767,26.642L71.165,26.642L71.165,7.748L76.44,7.748L81.877,20.775L87.286,7.748L92.561,7.748ZM99.64,24.085C97.774,22.255 96.841,19.94 96.841,17.141C96.841,14.342 97.778,12.032 99.653,10.211C101.528,8.39 103.825,7.479 106.543,7.479C109.262,7.479 111.549,8.39 113.406,10.211C115.264,12.032 116.192,14.342 116.192,17.141C116.192,19.94 115.259,22.255 113.393,24.085C111.527,25.915 109.239,26.83 106.53,26.83C103.821,26.83 101.524,25.915 99.64,24.085ZM110.136,21.098C111.051,20.111 111.509,18.792 111.509,17.141C111.509,15.491 111.056,14.172 110.15,13.185C109.244,12.198 108.033,11.705 106.516,11.705C105,11.705 103.789,12.198 102.883,13.185C101.977,14.172 101.524,15.491 101.524,17.141C101.524,18.792 101.977,20.111 102.883,21.098C103.789,22.085 105,22.578 106.516,22.578C108.033,22.578 109.239,22.085 110.136,21.098ZM119.206,11.247L119.206,7.748L134.117,7.748L134.117,11.247L128.949,11.247L128.949,26.642L124.347,26.642L124.347,11.247L119.206,11.247ZM139.903,24.085C138.037,22.255 137.104,19.94 137.104,17.141C137.104,14.342 138.042,12.032 139.917,10.211C141.792,8.39 144.088,7.479 146.807,7.479C149.525,7.479 151.813,8.39 153.67,10.211C155.527,12.032 156.456,14.342 156.456,17.141C156.456,19.94 155.522,22.255 153.656,24.085C151.79,25.915 149.503,26.83 146.793,26.83C144.084,26.83 141.787,25.915 139.903,24.085ZM150.4,21.098C151.315,20.111 151.772,18.792 151.772,17.141C151.772,15.491 151.319,14.172 150.413,13.185C149.507,12.198 148.296,11.705 146.78,11.705C145.264,11.705 144.053,12.198 143.146,13.185C142.24,14.172 141.787,15.491 141.787,17.141C141.787,18.792 142.24,20.111 143.146,21.098C144.053,22.085 145.264,22.578 146.78,22.578C148.296,22.578 149.503,22.085 150.4,21.098ZM165.364,26.642L160.762,26.642L160.762,7.748L165.364,7.748L165.364,16.038L171.608,7.748L177.637,7.748L169.859,17.195L177.637,26.642L171.716,26.642L165.364,18.299L165.364,26.642ZM183.181,24.085C181.315,22.255 180.382,19.94 180.382,17.141C180.382,14.342 181.32,12.032 183.195,10.211C185.07,8.39 187.366,7.479 190.085,7.479C192.803,7.479 195.091,8.39 196.948,10.211C198.805,12.032 199.733,14.342 199.733,17.141C199.733,19.94 198.8,22.255 196.934,24.085C195.068,25.915 192.781,26.83 190.071,26.83C187.362,26.83 185.065,25.915 183.181,24.085ZM193.678,21.098C194.593,20.111 195.05,18.792 195.05,17.141C195.05,15.491 194.597,14.172 193.691,13.185C192.785,12.198 191.574,11.705 190.058,11.705C188.542,11.705 187.33,12.198 186.424,13.185C185.518,14.172 185.065,15.491 185.065,17.141C185.065,18.792 185.518,20.111 186.424,21.098C187.33,22.085 188.542,22.578 190.058,22.578C191.574,22.578 192.781,22.085 193.678,21.098Z' style='fill: rgb(10, 12, 24);'></path><path d='M71.165,32.834L79.374,32.834C81.293,32.834 82.823,33.301 83.962,34.234C85.102,35.167 85.671,36.351 85.671,37.787C85.671,39.922 84.424,41.366 81.93,42.12C83.204,42.299 84.218,42.829 84.972,43.708C85.725,44.587 86.102,45.619 86.102,46.803C86.102,48.31 85.55,49.508 84.447,50.396C83.343,51.284 81.805,51.728 79.831,51.728L71.165,51.728L71.165,32.834ZM75.767,36.333L75.767,40.424L78.781,40.424C79.445,40.424 79.979,40.254 80.383,39.913C80.787,39.572 80.988,39.065 80.988,38.392C80.988,37.719 80.787,37.208 80.383,36.858C79.979,36.508 79.445,36.333 78.781,36.333L75.767,36.333ZM75.767,48.229L79.239,48.229C79.867,48.229 80.387,48.041 80.8,47.664C81.213,47.287 81.419,46.767 81.419,46.103C81.419,45.439 81.222,44.91 80.827,44.515C80.432,44.12 79.921,43.923 79.293,43.923L75.767,43.923L75.767,48.229ZM92.346,49.171C90.48,47.341 89.547,45.027 89.547,42.227C89.547,39.428 90.485,37.118 92.36,35.297C94.235,33.476 96.531,32.565 99.25,32.565C101.968,32.565 104.256,33.476 106.113,35.297C107.97,37.118 108.898,39.428 108.898,42.227C108.898,45.027 107.965,47.341 106.099,49.171C104.233,51.001 101.946,51.917 99.236,51.917C96.527,51.917 94.23,51.001 92.346,49.171ZM102.843,46.184C103.758,45.197 104.215,43.878 104.215,42.227C104.215,40.577 103.762,39.258 102.856,38.271C101.95,37.284 100.739,36.791 99.223,36.791C97.707,36.791 96.495,37.284 95.589,38.271C94.683,39.258 94.23,40.577 94.23,42.227C94.23,43.878 94.683,45.197 95.589,46.184C96.495,47.171 97.707,47.664 99.223,47.664C100.739,47.664 101.946,47.171 102.843,46.184ZM114.9,49.171C113.034,47.341 112.101,45.027 112.101,42.227C112.101,39.428 113.039,37.118 114.914,35.297C116.789,33.476 119.085,32.565 121.804,32.565C124.522,32.565 126.81,33.476 128.667,35.297C130.524,37.118 131.452,39.428 131.452,42.227C131.452,45.027 130.519,47.341 128.653,49.171C126.787,51.001 124.5,51.917 121.79,51.917C119.081,51.917 116.784,51.001 114.9,49.171ZM125.397,46.184C126.312,45.197 126.769,43.878 126.769,42.227C126.769,40.577 126.316,39.258 125.41,38.271C124.504,37.284 123.293,36.791 121.777,36.791C120.261,36.791 119.049,37.284 118.143,38.271C117.237,39.258 116.784,40.577 116.784,42.227C116.784,43.878 117.237,45.197 118.143,46.184C119.049,47.171 120.261,47.664 121.777,47.664C123.293,47.664 124.5,47.171 125.397,46.184ZM134.467,36.333L134.467,32.834L149.377,32.834L149.377,36.333L144.21,36.333L144.21,51.728L139.607,51.728L139.607,36.333L134.467,36.333ZM155.164,49.171C153.298,47.341 152.365,45.027 152.365,42.227C152.365,39.428 153.302,37.118 155.177,35.297C157.052,33.476 159.344,32.565 162.054,32.565C164.153,32.565 166.019,33.122 167.652,34.234C169.285,35.346 170.424,36.89 171.07,38.863L165.579,38.863C164.862,37.482 163.713,36.791 162.134,36.791C160.555,36.791 159.313,37.284 158.407,38.271C157.501,39.258 157.048,40.577 157.048,42.227C157.048,43.878 157.501,45.197 158.407,46.184C159.313,47.171 160.555,47.664 162.134,47.664C163.713,47.664 164.862,46.973 165.579,45.592L171.07,45.592C170.424,47.565 169.285,49.109 167.652,50.221C166.019,51.333 164.153,51.89 162.054,51.89C159.344,51.89 157.048,50.984 155.164,49.171ZM187.38,51.728L186.33,48.552L179.548,48.552L178.498,51.728L173.6,51.728L180.167,32.781L185.765,32.781L192.305,51.728L187.38,51.728ZM180.705,45.053L185.173,45.053L182.939,38.325L180.705,45.053ZM217.308,32.834L217.308,51.728L212.706,51.728L212.706,41.07L208.319,51.728L204.901,51.728L200.514,41.07L200.514,51.728L195.912,51.728L195.912,32.834L201.187,32.834L206.623,45.861L212.033,32.834L217.308,32.834ZM237.09,38.621C237.09,39.895 236.633,41.124 235.717,42.308C235.233,42.918 234.511,43.416 233.551,43.802C232.591,44.188 231.456,44.381 230.146,44.381L227.293,44.381L227.293,51.728L222.691,51.728L222.691,32.834L230.146,32.834C232.335,32.834 234.04,33.4 235.26,34.53C236.48,35.66 237.09,37.024 237.09,38.621ZM227.293,40.882L230.146,40.882C230.846,40.882 231.398,40.675 231.801,40.263C232.205,39.85 232.407,39.307 232.407,38.634C232.407,37.962 232.201,37.41 231.788,36.979C231.375,36.549 230.828,36.333 230.146,36.333L227.293,36.333L227.293,40.882Z' style='fill: rgb(10, 12, 24);'></path><path d='M50.702,8.694C39.11,-2.898 20.287,-2.898 8.694,8.694C-2.898,20.287 -2.898,39.11 8.694,50.702C20.286,62.294 39.109,62.294 50.702,50.702C62.294,39.109 62.294,20.286 50.702,8.694Z' style='fill: rgb(10, 12, 24);'></path><path d='M47.507,11.889C37.678,2.06 21.718,2.06 11.889,11.889C2.06,21.718 2.06,37.678 11.889,47.507C21.718,57.336 37.678,57.336 47.507,47.507C57.336,37.678 57.336,21.718 47.507,11.889Z' style='fill: rgb(250, 232, 78);'></path><path d='M26.129,15.163C31.125,10.167 39.237,10.167 44.233,15.163C49.229,20.159 49.229,28.271 44.233,33.267L30.463,47.037C29.681,47.819 28.483,48.005 27.5,47.498C26.518,46.99 25.976,45.905 26.162,44.815L26.163,44.811C26.314,43.923 25.939,43.028 25.201,42.513C24.463,41.997 23.494,41.954 22.712,42.401L18.689,44.704C17.542,45.361 16.097,45.168 15.163,44.233C14.228,43.298 14.035,41.854 14.692,40.707L16.981,36.707C17.429,35.925 17.384,34.955 16.866,34.217C16.348,33.48 15.45,33.108 14.563,33.264L14.558,33.265C13.466,33.457 12.377,32.919 11.866,31.936C11.354,30.954 11.539,29.753 12.323,28.969L26.129,15.163Z' style='fill: rgb(10, 12, 24);'></path><path d='M28.538,18.472C24.617,22.393 24.209,28.352 27.627,31.77C31.045,35.188 37.004,34.78 40.925,30.859C44.846,26.937 45.255,20.979 41.836,17.56C38.418,14.142 32.459,14.55 28.538,18.472Z' style='fill: rgb(255, 255, 255);'></path><path d='M37.061,19.582C36.301,20.342 36.301,21.576 37.061,22.336C37.82,23.095 39.054,23.095 39.814,22.336C40.574,21.576 40.574,20.342 39.814,19.582C39.054,18.822 37.82,18.822 37.061,19.582Z' style='fill: rgb(10, 12, 24);'></path><path d='M31.217,25.425C30.457,26.185 30.457,27.419 31.217,28.179C31.977,28.939 33.21,28.939 33.971,28.18C34.731,27.42 34.731,26.186 33.971,25.426C33.211,24.666 31.977,24.666 31.217,25.425Z' style='fill: rgb(10, 12, 24);'></path></svg>";
-    func _getWebpage() : Text {
-        var webpage = "<style>" #
-        "body { text-align: center; font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; }" #
-        "h1 { font-size: 3em; margin-bottom: 10px; }" #
-        "hr { margin-top: 20px; margin-bottom: 20px; }" #
-        "em { font-style: italic; display: block; margin-bottom: 20px; }" #
-        "ul { list-style-type: none; padding: 0; }" #
-        "li { margin: 10px 0; }" #
-        "li:before { content: '?? '; }" #
-        "svg { max-width: 150px; height: auto; display: block; margin: 20px auto; }" #
-        "h2 { text-decoration: underline; }" #
-        "</style>";
-
-        webpage := webpage # "<div><h1>" # name # "</h1></div>";
-        webpage := webpage # "<em>" # manifesto # "</em>";
-        webpage := webpage # "<div>" # logo # "</div>";
-        webpage := webpage # "<hr>";
-        webpage := webpage # "<h2>Our goals:</h2>";
-        webpage := webpage # "<ul>";
-        for (goal in goals.vals()) {
-            webpage := webpage # "<li>" # goal # "</li>";
-        };
-        webpage := webpage # "</ul>";
-        return webpage;
-    };
-
-    public type DAOStats = {
-        name : Text;
-        manifesto : Text;
-        goals : [Text];
-        member : [Text];
-        logo : Text;
-        numberOfMembers : Nat;
-    };
-    public type HttpRequest = Http.Request;
-    public type HttpResponse = Http.Response;
-
-    public query func http_request(request : HttpRequest) : async HttpResponse {
-        return ({
-            status_code = 200;
-            headers = [("Content-Type","text/html;charset=UTF-8")];
-            body = Text.encodeUtf8(_getWebpage());
-            streaming_strategy = null;
-        });
-    };
-
-    func _getNameFromMember (member : Member) : Text {
-        return member.name;
-    };
-
-    public query func getStats() : async DAOStats {
-        return ({
-            name = name;
-            manifesto = manifesto;
-            goals = Buffer.toArray(goals);
-            member = Iter.toArray(Iter.map(dao.vals(),_getNameFromMember));
-            logo = logo;
-            numberOfMembers = dao.size();
-        });
-    };
+  public query func getStats() : async DAOStats {
+    return ({
+      name = name;
+      manifesto = manifesto;
+      goals = Buffer.toArray(goals);
+      member = Iter.toArray(Iter.map(dao.vals(), _getNameFromMember));
+      logo = logo;
+      numberOfMembers = dao.size();
+    });
+  };
 
 };

@@ -15,6 +15,8 @@
     if (!dao) {
       return;
     }debugger;
+    let who = await dao.whoami();
+    console.log(who);
     let res = await dao.vote(BigInt(thisid), Boolean(votepayload));
     if (res.Ok) {
       return res.Ok;
