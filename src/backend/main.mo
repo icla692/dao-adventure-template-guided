@@ -19,7 +19,7 @@ actor class DAO()  {
     // LEVEL #1 //
     /////////////
 
-    let name : Text = "Motoko Bootcamp DAO";
+    let name : Text = "Motoko Development Kingdom";
     var manifesto : Text = "Empower the next wave of builders to make the Web3 revolution a reality";
 
     let goals : Buffer.Buffer<Text> = Buffer.Buffer<Text>(0);

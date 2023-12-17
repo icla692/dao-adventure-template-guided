@@ -4,7 +4,7 @@
 
 <div>
   <header class="App-header">
-    <p class="slogan">Motoko Bootcamp Dao</p>
-    <p class="">Welcome to your Super DAO!</p>
+    <p class="slogan">Motoko Development Kingdom</p>
+    <p class="">Welcome to our DAO!</p>
   </header>
 </div>
