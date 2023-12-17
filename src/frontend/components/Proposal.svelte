@@ -3,14 +3,13 @@
 </script>
 
 <div class="post-preview">
-  <h2>{post[0]}</h2>
-  <p>{post[1].creator.owner.toString()}</p>
-  <p>Change website text to: {post[1].payload}</p>
-  <p>
-    Yes: {(post[1].votes[0] / BigInt(100000000)).toString()}, No: {(
-      post[1].votes[1] / BigInt(100000000)
-    ).toString()}
-  </p>
+  <h2>{(post.id / BigInt(100000000)).toString()} {post.manifest}</h2>
+ <p>
+  Votes Status: {(parseInt(post.votes)).toString()}
+</p>
+<p>
+  Voters: {(post.voters.length).toString()}
+</p>
 </div>
 
 <style>
@@ -21,10 +20,10 @@
     padding: 2vmin;
   }
   h2 {
-    color: white;
+    color: rgb(8, 8, 8);
   }
 
   p {
-    color: white;
+    color: rgb(26, 25, 25);
   }
 </style>

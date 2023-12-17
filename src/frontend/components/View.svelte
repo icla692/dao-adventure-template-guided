@@ -9,7 +9,7 @@
       return;
     }
     console.log('Principal', principal);
-    let res = await dao.get_all_proposals();
+    let res = await dao.getProposals();
     console.log('Proposals', res);
     return res;
   }

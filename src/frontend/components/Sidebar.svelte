@@ -1,13 +1,17 @@
 <script>
   import { view } from '../stores.js';
   import { canisterId as canisterIdBackend } from '../../declarations/backend/index.js';
+  import { idlFactory } from '../../declarations/backend/backend.did.js';
   import { AuthClient } from '@dfinity/auth-client';
-  import { HttpAgent } from '@dfinity/agent';
+  import { Actor, HttpAgent } from '@dfinity/agent';
   import { principal } from '../stores';
   import { daoActor } from '../stores';
 
   const handleView = () => {
     $view.current = $view.view;
+  };
+  const handleMember = () => {
+    $view.current = $view.member;
   };
   const handleCreate = () => {
     $view.current = $view.create;
@@ -23,7 +27,7 @@
 
   const handleWebpage = () => {
     process.env.DFX_NETWORK === 'ic'
-      ? window.open(`https://${canisterId}.raw.icp0.io`, '_blank')
+      ? window.open(`https://${canisterIdBackend}.raw.icp0.io`, '_blank')
       : window.open(
           `http://localhost:4943/?canisterId=${canisterIdBackend}`,
           '_blank',
@@ -45,9 +49,11 @@
     });
     const p = authClient.getIdentity().getPrincipal();
     principal.set(p);
+    let identity = authClient.getIdentity();
     const agent = new HttpAgent({ identity });
-    const actor = reateActor(canisterIdBackend, {
-      agent,
+    const actor = Actor.createActor(idlFactory, {
+    agent: agent,
+    canisterId,
     });
     daoActor.set(actor);
   };
@@ -56,6 +62,7 @@
 <nav>
   <ul>
     <li on:click={() => handleHome()}>🏠 Home</li>
+    <li on:click={() => handleMember()}>⛹ Member</li>
     <li on:click={() => handleView()}>🚀 View</li>
     <li on:click={() => handleCreate()}>⭐️ Create</li>
     <li on:click={() => handleVote()}>🗑 Vote</li>

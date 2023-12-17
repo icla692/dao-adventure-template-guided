@@ -11,6 +11,7 @@
     if (!dao) {
       return
     }
+    debugger;
     let res = await dao.createProposal(summarypayload)
     if (res.Ok) {
       return res.Ok

@@ -5,7 +5,9 @@ export const view = writable({
     view: 2,
     create: 3,
     vote: 4,
+    member:5,
     current: 1,
+
 });
 
 export const proposaltoVote = writable({

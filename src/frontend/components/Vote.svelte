@@ -14,8 +14,8 @@
     let dao = get(daoActor);
     if (!dao) {
       return;
-    }
-    let res = await dao.vote(BigInt(thisid), votepayload);
+    }debugger;
+    let res = await dao.vote(BigInt(thisid), Boolean(votepayload));
     if (res.Ok) {
       return res.Ok;
     } else {

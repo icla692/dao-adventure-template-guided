@@ -124,8 +124,8 @@ actor class DAO()  {
         subaccount : ?Subaccount;
     };
 
-    let nameToken = "Motoko Bootcamp Token";
-    let symbolToken = "MBT";
+    let nameToken = "Kitty Play Toy";
+    let symbolToken = "KPT";
 
     let ledger : TrieMap.TrieMap<Account, Nat> = TrieMap.TrieMap(Account.accountsEqual, Account.accountsHash);
 
@@ -272,6 +272,10 @@ actor class DAO()  {
 
     public query func getProposal(id : Nat) : async ?Proposal {
         proposals.get(id);
+    };
+
+    public query func getProposals() : async [Proposal] { 
+        return Iter.toArray(proposals.vals());
     };
 
     public shared ({ caller }) func vote(id : Nat, vote : Bool) : async voteResult {

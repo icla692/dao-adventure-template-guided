@@ -2,6 +2,7 @@
   import Sidebar from './components/Sidebar.svelte';
   import { view } from './stores.js';
   import Home from './components/Home.svelte';
+  import Member from './components/Member.svelte';
   import Vote from './components/Vote.svelte';
   import View from './components/View.svelte';
   import Create from './components/Create.svelte';
@@ -14,6 +15,8 @@
       <Home />
     {:else if $view.current === $view.view}
       <View />
+    {:else if $view.current === $view.member}
+      <Member />
     {:else if $view.current === $view.vote}
       <Vote />
     {:else if $view.current === $view.create}
